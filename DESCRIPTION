@@ -1,0 +1,20 @@
+Package: regexmagic
+Version: 0.0.0.9000
+Title: Automated Detection of Regular Expression Patterns
+Description: Given a vector of strings, detects patterns which regex match to 
+  as large a proportion of these as possible
+Authors@R: c(
+ person("Jonathan", "Carroll", email = "rpkg@jcarroll.com.au", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1404-5264")),
+ person("Vincent", "Rouilly")
+ )
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+URL: https://github.com/jonocarroll/regexmagic
+BugReports: https://github.com/jonocarroll/regexmagic/issues
+Imports: 
+    dplyr,
+    purrr,
+    stringr
+RoxygenNote: 6.0.1.9000

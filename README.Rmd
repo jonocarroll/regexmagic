@@ -1,0 +1,115 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+library(regexmagic)
+```
+
+# regexmagic
+
+The goal of regexmagic is to provide an automated method for classifying a vector
+of strings into groupings based on regex matches. This differs from finding matches to 
+a known regex within a vector, rather this helps determine commonalities between 
+strings.
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+```{r, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("jonocarroll/regexmagic")
+```
+
+## Example
+
+Given the vector of strings in the (provided) example data, this package 
+will determine the groupings by regex
+
+```{r example data}
+data(identifiers)
+print(identifiers)
+```
+
+Within this example data there are 3 distinct patterns, along with 3 identifers which
+do not match exactly these patterns (confounders). The goal is to produce a package
+which can detect the common patterns and sort the identifiers into the correct
+groups.
+
+## Methodology
+
+First, common substrings are identified. These are allowed some tolerance 
+by which the identifiers may deviate. By default this is 95% of samples should 
+match the pattern.
+
+With the example data, we can detect the common substrings
+
+```{r}
+purrr::map(split_by_length(identifiers), find_common_substrings)
+```
+
+This has become confused by the confounder in each group which destroys the 
+perfect relationship. We can improve this by lowering the tolerance
+
+```{r}
+(guess <- purrr::map(split_by_length(identifiers), find_common_substrings, tolerance = 0.9))
+```
+
+This successfully identifies the common substrings, but leaves the pattern determining 
+the missing parts unknown. Next we need to determine common patterns for these. We can 
+search some given patterns to see if each character matches this enought times. The 
+pre-defined patterns are
+
+```{r}
+known_patterns
+```
+
+Appying these, one character at a time, and seeing which pattern matches the most number 
+of characters at a position, we can determine which pattern best fits at that position
+
+```{r}
+(guess <- purrr::map(split_by_length(identifiers), detect_pattern, tolerance = 0.9))
+```
+
+How many identifiers match these patterns?
+
+```{r}
+matches <- purrr::map2(split_by_length(identifiers), guess, ~stringr::str_match(.x, .y))
+names(matches) <- guess
+matches
+```
+
+## Working Prototype
+
+Now that the pieces seem to work, we can apply the categorisations in a function, 
+returning (invisibly) a list of matches and non-matches, and printing a summary 
+to the screen
+
+```{r}
+results <- categorise_regex(identifiers, tolerance = 0.9)
+```
+
+where we see the single confounder in each case is not matched.
+
+The actual categorisations are also available
+
+```{r}
+results
+```
+
+
+## Yet To Do
+
+- variable-length identifiers
+- multiple identifiers with a given length
+- most testing
+- documentation
