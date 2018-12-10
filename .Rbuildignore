@@ -1,3 +1,4 @@
+^data-raw$
 ^regexmagic\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
