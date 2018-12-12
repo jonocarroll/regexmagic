@@ -89,7 +89,7 @@ tolerance
 This successfully identifies the common substrings, but leaves the
 pattern determining the missing parts unknown. Next we need to determine
 common patterns for these. We can search some given patterns to see if
-each character matches this enought times. The pre-defined patterns are
+each character matches this enough times. The pre-defined patterns are
 
 ``` r
 known_patterns
